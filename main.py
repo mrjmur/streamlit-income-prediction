@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import pickle
+from sklearn.preprocessing import OneHotEncoder
 
 # Заголовок приложения
 st.title("Прогнозирование дохода")
@@ -50,11 +50,15 @@ data = {
 df = pd.DataFrame(data, index=[0])
 
 # Предобработка данных
-# (Здесь нужно добавить код для кодирования категориальных признаков и масштабирования числовых признаков)
+encoder = OneHotEncoder(sparse=False, handle_unknown='ignore')
+encoder.fit(df[['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race', 'sex']])
+encoded_features = encoder.transform(df[['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race', 'sex']])
+encoded_df = pd.DataFrame(encoded_features, columns=encoder.get_feature_names_out())
+final_df = pd.concat([df[['age', 'education-num', 'capital-gain', 'capital-loss', 'hours-per-week']], encoded_df], axis=1)
 
 # Предсказание
 if st.button("Сделать предсказание"):
-    prediction = model.predict(df)
+    prediction = model.predict(final_df)
     if prediction[0] == 1:
         st.success("Ваш заработок, вероятно, превысит $50k!")
     else:
