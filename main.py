@@ -50,7 +50,7 @@ data = {
 df = pd.DataFrame(data, index=[0])
 
 # Предобработка данных
-encoder = OneHotEncoder(sparse=False, handle_unknown='ignore')
+encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
 encoder.fit(df[['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race', 'sex']])
 encoded_features = encoder.transform(df[['workclass', 'education', 'marital-status', 'occupation', 'relationship', 'race', 'sex']])
 encoded_df = pd.DataFrame(encoded_features, columns=encoder.get_feature_names_out())
